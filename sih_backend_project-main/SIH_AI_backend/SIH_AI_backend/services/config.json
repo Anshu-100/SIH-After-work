@@ -1,0 +1,114 @@
+{
+  "categories": {
+    "Water Management": {
+      "keywords": [
+        "water", "पानी", "जल", "পানি", "ପାଣି", "پانی",
+        "pipeline", "पाइप", "नल", "tap", "drinking water"
+      ],
+      "skills": ["Water Management", "Civil Engineering", "IoT"],
+      "subtypes": {
+        "Water Supply Problem": ["not coming", "no water", "पानी नहीं", "पानी नहीं आ", "जल नहीं"],
+        "Water Pipeline Leakage": ["leak", "leakage", "लीकेज", "रिसाव"],
+        "Water Quality Problem": ["dirty", "contaminated", "गंदा", "दूषित"]
+      }
+    },
+    "Education": {
+      "keywords": [
+        "school", "college", "education", "student", "teacher",
+        "स्कूल", "विद्यालय", "कॉलेज", "शिक्षा", "छात्र", "शिक्षक"
+      ],
+      "skills": ["Education Technology", "Web Development", "UI/UX"],
+      "subtypes": {
+        "School Infrastructure / Education Issue": ["school", "स्कूल", "विद्यालय"]
+      }
+    },
+    "Healthcare": {
+      "keywords": [
+        "hospital", "health", "doctor", "medicine", "medical",
+        "अस्पताल", "स्वास्थ्य", "डॉक्टर", "दवा", "इलाज"
+      ],
+      "skills": ["Healthcare Technology", "AI/ML", "Data Analytics"],
+      "subtypes": {}
+    },
+    "Agriculture": {
+      "keywords": [
+        "farmer", "farm", "crop", "agriculture", "irrigation",
+        "किसान", "खेती", "फसल", "कृषि", "सिंचाई"
+      ],
+      "skills": ["Agricultural Technology", "IoT", "Data Analytics"],
+      "subtypes": {}
+    },
+    "Sanitation": {
+      "keywords": [
+        "garbage", "waste", "toilet", "drain", "sewage",
+        "कचरा", "शौचालय", "नाली", "गंदगी", "कूड़ा"
+      ],
+      "skills": ["Waste Management", "Environmental Engineering", "IoT"],
+      "subtypes": {
+        "Garbage Management Problem": ["garbage", "कचरा", "कूड़ा"],
+        "Drainage Problem": ["drain", "नाली"]
+      }
+    },
+    "Environment": {
+      "keywords": [
+        "pollution", "air", "forest", "tree", "environment",
+        "प्रदूषण", "हवा", "जंगल", "पेड़", "पर्यावरण"
+      ],
+      "skills": ["Environmental Engineering", "Data Analytics", "IoT"],
+      "subtypes": {}
+    },
+    "Transportation": {
+      "keywords": [
+        "bus", "transport", "traffic", "vehicle",
+        "बस", "यातायात", "ट्रैफिक", "वाहन"
+      ],
+      "skills": ["Transportation Engineering", "Data Analytics", "IoT"],
+      "subtypes": {}
+    },
+    "Urban Infrastructure": {
+      "keywords": [
+        "road", "street", "bridge", "streetlight",
+        "सड़क", "पुल", "स्ट्रीट लाइट", "सड़क खराब"
+      ],
+      "skills": ["Civil Engineering", "GIS", "IoT"],
+      "subtypes": {
+        "Road Infrastructure Problem": ["road", "सड़क"]
+      }
+    },
+    "Public Safety": {
+      "keywords": [
+        "crime", "unsafe", "accident", "danger",
+        "अपराध", "असुरक्षित", "दुर्घटना", "खतरा"
+      ],
+      "skills": ["AI/ML", "Computer Vision", "IoT"],
+      "subtypes": {}
+    },
+    "Energy": {
+      "keywords": [
+        "electricity", "power", "light", "बिजली",
+        "करंट", "विद्युत"
+      ],
+      "skills": ["Electrical Engineering", "IoT", "Renewable Energy"],
+      "subtypes": {}
+    }
+  },
+  "severity_keywords": {
+    "CRITICAL": [
+      "death", "dead", "emergency", "life threatening",
+      "immediate danger", "मौत", "आपातकाल", "जान का खतरा", "तुरंत खतरा"
+    ],
+    "HIGH": [
+      "10 days", "15 days", "20 days", "month", "many people",
+      "hospital", "school", "drinking water", "पानी नहीं",
+      "अस्पताल", "स्कूल", "कई लोग", "एक महीने"
+    ],
+    "MEDIUM": [
+      "problem", "issue", "frequent", "बार बार", "समस्या", "परेशानी"
+    ]
+  },
+  "affected_groups": {
+    "Students": ["student", "students", "school", "स्कूल", "छात्र", "बच्चे"],
+    "Farmers": ["farmer", "farmers", "किसान", "किसानों"],
+    "Village Residents": ["village", "villagers", "गांव", "गाँव", "ग्रामीण"]
+  }
+}

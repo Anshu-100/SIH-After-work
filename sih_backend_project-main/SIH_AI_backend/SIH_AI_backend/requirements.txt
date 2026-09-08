@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+langdetect
+python-dotenv
+pymongo
+transformers
+torch
+sentencepiece
