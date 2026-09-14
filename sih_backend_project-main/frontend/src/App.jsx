@@ -14,6 +14,8 @@ import SolutionDetails from "./pages/SolutionDetails";
 import Impact from "./pages/Impact";
 import About from "./pages/About";
 import Signup from "./pages/Signup";
+import HotspotMap from "./pages/HotspotMap";
+import ExecutiveDashboard from "./pages/ExecutiveDashboard";
 
 export default function App() {
   return (
@@ -35,6 +37,9 @@ export default function App() {
         <Route path="/solution-details" element={<SolutionDetails />} />
         <Route path="/impact" element={<Impact />} />
         <Route path="/about" element={<About />} />
+        <Route path="/hotspot-map" element={<HotspotMap />} />
+        <Route path="/analytics" element={<ExecutiveDashboard />} />
+        <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
       </Routes>
     </BrowserRouter>
   );
@@ -43,13 +48,15 @@ export default function App() {
 /* ================= HOME LANDING PAGE ================= */
 function HomeLanding() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 w-full max-w-full overflow-x-hidden">
       {/* ================= HERO ================= */}
       <main id="home">
-        <section className="relative min-h-[900px] overflow-visible bg-[#03183b] md:min-h-[780px]">
+        <section className="relative min-h-[900px] overflow-x-clip bg-[#03183b] md:min-h-[780px]">
           {/* BACKGROUND GLOW */}
-          <div className="absolute left-[-180px] top-[220px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-3xl"></div>
-          <div className="absolute right-[-150px] top-[150px] h-[500px] w-[500px] rounded-full bg-green-500/10 blur-3xl"></div>
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute left-[-180px] top-[220px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-3xl"></div>
+            <div className="absolute right-[-150px] top-[150px] h-[500px] w-[500px] rounded-full bg-green-500/10 blur-3xl"></div>
+          </div>
 
           {/* GRID */}
           <div
@@ -96,6 +103,20 @@ function HomeLanding() {
                   className="rounded-xl border border-green-400/60 bg-transparent px-6 py-4 font-bold text-white transition duration-300 hover:-translate-y-1 hover:bg-white/10"
                 >
                   Explore Challenges →
+                </Link>
+
+                <Link
+                  to="/hotspot-map"
+                  className="rounded-xl border border-emerald-400/40 bg-emerald-400/10 px-6 py-4 font-bold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:bg-emerald-400/20"
+                >
+                  🗺️ Live Crisis Map
+                </Link>
+
+                <Link
+                  to="/analytics"
+                  className="rounded-xl border border-cyan-400/40 bg-cyan-400/10 px-6 py-4 font-bold text-cyan-300 transition duration-300 hover:-translate-y-1 hover:bg-cyan-400/20"
+                >
+                  📊 Executive Analytics
                 </Link>
               </div>
 
@@ -168,7 +189,7 @@ function HomeLanding() {
               </div>
 
               {/* UNIVERSITY CARD */}
-              <div className="absolute left-[-70px] top-[250px] w-52 rounded-2xl border border-purple-200/30 bg-purple-100/95 p-4 shadow-2xl backdrop-blur">
+              <div className="absolute left-0 lg:left-[-30px] top-[250px] w-52 rounded-2xl border border-purple-200/30 bg-purple-100/95 p-4 shadow-2xl backdrop-blur">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-2xl">
                     🎓
@@ -181,7 +202,7 @@ function HomeLanding() {
               </div>
 
               {/* INDUSTRY CARD */}
-              <div className="absolute right-[-20px] top-[230px] w-48 rounded-2xl border border-orange-200/30 bg-orange-100/95 p-4 shadow-2xl backdrop-blur">
+              <div className="absolute right-0 top-[230px] w-48 rounded-2xl border border-orange-200/30 bg-orange-100/95 p-4 shadow-2xl backdrop-blur">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-2xl">
                     🏭

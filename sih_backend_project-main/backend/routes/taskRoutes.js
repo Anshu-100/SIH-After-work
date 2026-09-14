@@ -12,7 +12,9 @@ const router = express.Router();
 // GET /api/tasks -> Retrieve all tasks for public display/dropdown
 router.get('/', async (req, res) => {
   try {
-    const tasks = await Task.find({}).sort({ createdAt: -1 });
+    const tasks = await Task.find({})
+      .sort({ createdAt: -1 })
+      .populate('user', 'name email');
     res.status(200).json(tasks);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -22,7 +24,7 @@ router.get('/', async (req, res) => {
 // GET /api/tasks/:id -> Retrieve a single task publicly (no auth required)
 router.get('/:id', async (req, res) => {
   try {
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findById(req.params.id).populate('user', 'name email');
     if (!task) {
       return res.status(404).json({ message: 'Task Not Found' });
     }
@@ -42,7 +44,7 @@ router.use(authMiddleware);
 // 1. Create or add new task
 router.post('/', async (req, res) => {
   try {
-    const { title, category, description, location, aiAnalysis } = req.body;
+    const { title, category, description, location, severity, impactScore, aiAnalysis } = req.body;
 
     if (!title || !category || !description || !location) {
       return res
@@ -53,6 +55,8 @@ router.post('/', async (req, res) => {
     const task = new Task({
       title,
       category,
+      severity: severity || aiAnalysis?.severity || 'MEDIUM',
+      impactScore: impactScore || 'Medium',
       description,
       location,
       user: req.user.id,

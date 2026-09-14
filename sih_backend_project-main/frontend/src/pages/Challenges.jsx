@@ -80,10 +80,27 @@ export default function Challenges() {
               >
                 <div>
                   {/* Top Badges */}
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
-                      {task.category}
-                    </span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
+                        {task.category}
+                      </span>
+                      {(task.severity || task.aiAnalysis?.severity) && (
+                        <span
+                          className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                            (task.severity || task.aiAnalysis?.severity).toUpperCase() === "CRITICAL"
+                              ? "bg-red-100 text-red-700 border border-red-200"
+                              : (task.severity || task.aiAnalysis?.severity).toUpperCase() === "HIGH"
+                              ? "bg-orange-100 text-orange-700 border border-orange-200"
+                              : (task.severity || task.aiAnalysis?.severity).toUpperCase() === "MEDIUM"
+                              ? "bg-amber-100 text-amber-700 border border-amber-200"
+                              : "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                          }`}
+                        >
+                          ⚡ {task.severity || task.aiAnalysis?.severity}
+                        </span>
+                      )}
+                    </div>
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${
                         task.status === "completed"

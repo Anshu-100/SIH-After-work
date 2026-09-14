@@ -66,6 +66,7 @@ function ChallengeDetails() {
       summary: stored.summary,
       overall_confidence: stored.overallConfidence,
       language: stored.language,
+      model_pipeline: stored.modelPipeline,
       _source: "stored",
     };
   }
@@ -151,11 +152,26 @@ function ChallengeDetails() {
 
         {/* MAIN CARD */}
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl md:p-10">
-          {/* CATEGORY & STATUS BADGES */}
+          {/* CATEGORY, SEVERITY & STATUS BADGES */}
           <div className="mb-6 flex flex-wrap items-center gap-3">
             <span className="rounded-full bg-emerald-500/15 px-4 py-2 text-sm font-semibold text-emerald-400">
               {problem.category}
             </span>
+            {(problem.severity || problem.aiAnalysis?.severity) && (
+              <span
+                className={`rounded-full px-4 py-2 text-sm font-bold ${
+                  (problem.severity || problem.aiAnalysis?.severity).toUpperCase() === "CRITICAL"
+                    ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                    : (problem.severity || problem.aiAnalysis?.severity).toUpperCase() === "HIGH"
+                    ? "bg-orange-500/20 text-orange-400 border border-orange-500/30"
+                    : (problem.severity || problem.aiAnalysis?.severity).toUpperCase() === "MEDIUM"
+                    ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                    : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                }`}
+              >
+                ⚡ Severity: {problem.severity || problem.aiAnalysis?.severity}
+              </span>
+            )}
             <span
               className={`rounded-full border border-white/10 px-4 py-2 text-sm capitalize ${
                 problem.status === "completed"
@@ -270,6 +286,17 @@ function ChallengeDetails() {
                     </p>
                     <p className="mt-2 leading-7 text-white/70">
                       {analysis.summary}
+                    </p>
+                  </div>
+                )}
+
+                {analysis.model_pipeline && (
+                  <div className="sm:col-span-2">
+                    <p className="text-xs font-bold uppercase tracking-wide text-white/40">
+                      Model Pipeline
+                    </p>
+                    <p className="mt-1 text-xs font-semibold text-blue-300">
+                      🧠 {analysis.model_pipeline}
                     </p>
                   </div>
                 )}

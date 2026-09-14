@@ -10,16 +10,31 @@ const taskSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Category is required'],
     enum: [
+      'Urban Infrastructure',
       'Infrastructure',
+      'Water Management',
+      'Sanitation',
       'Healthcare',
       'Education',
-      'Environment',
-      'Smart City',
       'Agriculture',
+      'Environment',
+      'Transportation',
+      'Public Safety',
+      'Energy',
+      'Smart City',
       'Governance',
       'Other'
     ],
     default: 'Other',
+  },
+  severity: {
+    type: String,
+    enum: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'Critical', 'High', 'Medium', 'Low'],
+    default: 'MEDIUM'
+  },
+  impactScore: {
+    type: String,
+    default: 'Medium'
   },
   description: {
     type: String,
@@ -30,6 +45,12 @@ const taskSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Location is required'],
     trim: true,
+  },
+  lat: {
+    type: Number,
+  },
+  lng: {
+    type: Number,
   },
   status: {
     type: String,
@@ -44,7 +65,7 @@ const taskSchema = new mongoose.Schema({
 
   // ==========================================
   // AI PROBLEM ANALYSIS (from problem_analyzer.py service)
-  // Optional — populated only when the "AI Categorize" step runs
+  // Populated when AI Categorization runs
   // ==========================================
   aiAnalysis: {
     language: { type: String },
@@ -63,7 +84,8 @@ const taskSchema = new mongoose.Schema({
     summary: { type: String },
     overallConfidence: { type: Number },
     translatedText: { type: String },
+    modelPipeline: { type: String },
   },
-}, { timestamps: true })
+}, { timestamps: true });
 
-module.exports = mongoose.model("Task", taskSchema)
+module.exports = mongoose.model("Task", taskSchema);

@@ -2,113 +2,144 @@
   "categories": {
     "Water Management": {
       "keywords": [
-        "water", "पानी", "जल", "পানি", "ପାଣି", "پانی",
-        "pipeline", "पाइप", "नल", "tap", "drinking water"
+        "water", "पानी", "जल", "पानी", "ପାଣି", "پانی",
+        "pipeline", "पाइप", "नल", "tap", "drinking water", "borewell", "tanker"
       ],
-      "skills": ["Water Management", "Civil Engineering", "IoT"],
+      "skills": ["Water Resources Engineering", "Civil Engineering", "IoT Sensor Systems"],
       "subtypes": {
-        "Water Supply Problem": ["not coming", "no water", "पानी नहीं", "पानी नहीं आ", "जल नहीं"],
-        "Water Pipeline Leakage": ["leak", "leakage", "लीकेज", "रिसाव"],
-        "Water Quality Problem": ["dirty", "contaminated", "गंदा", "दूषित"]
+        "Water Supply Interruption": ["not coming", "no water", "पानी नहीं", "पानी नहीं आ", "supply cut", "stopped"],
+        "Water Pipeline Leakage / Rupture": ["leak", "leakage", "लीकेज", "रिसाव", "burst", "rupture"],
+        "Drinking Water Contamination": ["dirty", "contaminated", "गंदा", "दूषित", "poison", "smell", "foul"]
       }
     },
-    "Education": {
+    "Urban Infrastructure": {
       "keywords": [
-        "school", "college", "education", "student", "teacher",
-        "स्कूल", "विद्यालय", "कॉलेज", "शिक्षा", "छात्र", "शिक्षक"
+        "road", "street", "bridge", "streetlight", "pothole", "manhole", "flyover", "drainage",
+        "सड़क", "पुल", "स्ट्रीट लाइट", "सड़क खराब", "गड्ढा", "मेनहोल"
       ],
-      "skills": ["Education Technology", "Web Development", "UI/UX"],
+      "skills": ["Civil & Structural Engineering", "GIS Mapping", "Smart City Planning"],
       "subtypes": {
-        "School Infrastructure / Education Issue": ["school", "स्कूल", "विद्यालय"]
+        "Dangerous Potholes & Road Damage": ["pothole", "crater", "गड्ढा", "broken road", "damaged road"],
+        "Bridge & Flyover Structural Hazard": ["bridge", "flyover", "पुल", "cracks", "collapse", "vibrating"],
+        "Open Manhole & Drainage Hazard": ["manhole", "open drain", "uncovered", "मेनहोल"]
+      }
+    },
+    "Sanitation": {
+      "keywords": [
+        "garbage", "waste", "toilet", "drain", "sewage", "dump", "trash",
+        "कचरा", "शौचालय", "नाली", "गंदगी", "कूड़ा"
+      ],
+      "skills": ["Solid Waste Management", "Environmental Engineering", "Public Health"],
+      "subtypes": {
+        "Garbage Pileup & Overflow": ["garbage", "trash", "dump", "कचरा", "कूड़ा", "overflow"],
+        "Sewage Overflow & Stagnation": ["sewage", "drain", "नाली", "sewer", "stagnant"],
+        "Public Toilet Hygiene": ["toilet", "latrine", "शौचालय"]
       }
     },
     "Healthcare": {
       "keywords": [
-        "hospital", "health", "doctor", "medicine", "medical",
-        "अस्पताल", "स्वास्थ्य", "डॉक्टर", "दवा", "इलाज"
+        "hospital", "health", "doctor", "medicine", "medical", "clinic", "ambulance", "nurse",
+        "अस्पताल", "स्वास्थ्य", "डॉक्टर", "दवा", "इलाज", "दवाखाना"
       ],
-      "skills": ["Healthcare Technology", "AI/ML", "Data Analytics"],
-      "subtypes": {}
+      "skills": ["Healthcare Management", "Biomedical Systems", "Health Informatics"],
+      "subtypes": {
+        "Hospital Shortage of Medicines & Oxygen": ["medicine", "oxygen", "stock", "दवा", "ventilator"],
+        "Medical Staff Absence / Negligence": ["doctor", "nurse", "absent", "staff", "डॉक्टर"],
+        "Emergency Medical & Ambulance Failure": ["ambulance", "108", "emergency", "ICU", "आपातकाल"]
+      }
+    },
+    "Education": {
+      "keywords": [
+        "school", "college", "education", "student", "teacher", "classroom", "books",
+        "स्कूल", "विद्यालय", "कॉलेज", "शिक्षा", "छात्र", "शिक्षक"
+      ],
+      "skills": ["Educational Technology", "Institutional Management", "Child Welfare"],
+      "subtypes": {
+        "Dilapidated School Building / Facilities": ["building", "roof", "classroom", "ceiling", "छत"],
+        "Teacher Shortage & Absenteeism": ["teacher", "staff", "शिक्षक", "vacancy"],
+        "Student Amenities & Mid-day Meal": ["mid day meal", "meal", "food", "books", "uniform"]
+      }
     },
     "Agriculture": {
       "keywords": [
-        "farmer", "farm", "crop", "agriculture", "irrigation",
+        "farmer", "farm", "crop", "agriculture", "irrigation", "paddy", "wheat", "drought", "fertilizer",
         "किसान", "खेती", "फसल", "कृषि", "सिंचाई"
       ],
-      "skills": ["Agricultural Technology", "IoT", "Data Analytics"],
-      "subtypes": {}
-    },
-    "Sanitation": {
-      "keywords": [
-        "garbage", "waste", "toilet", "drain", "sewage",
-        "कचरा", "शौचालय", "नाली", "गंदगी", "कूड़ा"
-      ],
-      "skills": ["Waste Management", "Environmental Engineering", "IoT"],
+      "skills": ["Agricultural Engineering", "IoT Precision Farming", "Agronomy"],
       "subtypes": {
-        "Garbage Management Problem": ["garbage", "कचरा", "कूड़ा"],
-        "Drainage Problem": ["drain", "नाली"]
+        "Canal & Irrigation Failure": ["irrigation", "canal", "pump", "सिंचाई", "नहर"],
+        "Crop Pest Attack / Disease": ["pest", "locust", "disease", "कीड़े", "फसल नष्ट"],
+        "Seeds & Fertilizer Shortage": ["fertilizer", "seeds", "urea", "खाद", "बीज"]
       }
     },
     "Environment": {
       "keywords": [
-        "pollution", "air", "forest", "tree", "environment",
+        "pollution", "air", "forest", "tree", "environment", "smoke", "river", "soil", "wildlife",
         "प्रदूषण", "हवा", "जंगल", "पेड़", "पर्यावरण"
       ],
-      "skills": ["Environmental Engineering", "Data Analytics", "IoT"],
-      "subtypes": {}
+      "skills": ["Environmental Science", "Pollution Monitoring", "Forestry & Ecology"],
+      "subtypes": {
+        "Air & Factory Smoke Pollution": ["air", "smoke", "chimney", "dust", "धुआं", "प्रदूषण"],
+        "River & Water Body Pollution": ["river", "lake", "pond", "effluent", "नदी"],
+        "Illegal Deforestation & Tree Felling": ["forest", "tree", "cutting", "जंगल", "पेड़"]
+      }
     },
     "Transportation": {
       "keywords": [
-        "bus", "transport", "traffic", "vehicle",
-        "बस", "यातायात", "ट्रैफिक", "वाहन"
+        "bus", "transport", "traffic", "vehicle", "railway", "train", "auto", "commute",
+        "बस", "यातायात", "ट्रैफिक", "वाहन", "ट्रेन"
       ],
-      "skills": ["Transportation Engineering", "Data Analytics", "IoT"],
-      "subtypes": {}
-    },
-    "Urban Infrastructure": {
-      "keywords": [
-        "road", "street", "bridge", "streetlight",
-        "सड़क", "पुल", "स्ट्रीट लाइट", "सड़क खराब"
-      ],
-      "skills": ["Civil Engineering", "GIS", "IoT"],
+      "skills": ["Transport Planning", "Traffic Management", "Logistics Systems"],
       "subtypes": {
-        "Road Infrastructure Problem": ["road", "सड़क"]
+        "Public Bus Service Disruption": ["bus", "route", "timing", "बस"],
+        "Severe Traffic Congestion & Signal Failure": ["traffic", "jam", "signal", "ट्रैफिक"],
+        "Railway Crossing & Station Safety": ["railway", "train", "crossing", "platform"]
       }
     },
     "Public Safety": {
       "keywords": [
-        "crime", "unsafe", "accident", "danger",
-        "अपराध", "असुरक्षित", "दुर्घटना", "खतरा"
+        "crime", "unsafe", "accident", "danger", "theft", "police", "harassment", "patrol",
+        "अपराध", "असुरक्षित", "दुर्घटना", "खतरा", "चोरी", "पुलिस"
       ],
-      "skills": ["AI/ML", "Computer Vision", "IoT"],
-      "subtypes": {}
+      "skills": ["Public Safety Systems", "Computer Vision Surveillance", "Cyber Security"],
+      "subtypes": {
+        "Street Safety & Lack of Police Patrol": ["patrol", "police", "unsafe", "dark", "crime"],
+        "Accident-Prone Zone / Blind Spot": ["accident", "collision", "blind spot", "दुर्घटना"],
+        "Harassment & Public Threat": ["harassment", "threat", "theft", "गुंडागर्दी"]
+      }
     },
     "Energy": {
       "keywords": [
-        "electricity", "power", "light", "बिजली",
-        "करंट", "विद्युत"
+        "electricity", "power", "light", "transformer", "voltage", "blackout", "wires",
+        "बिजली", "करंट", "विद्युत", "ट्रांसफार्मर", "तार"
       ],
-      "skills": ["Electrical Engineering", "IoT", "Renewable Energy"],
-      "subtypes": {}
+      "skills": ["Electrical Power Engineering", "Smart Grid Systems", "Renewable Energy"],
+      "subtypes": {
+        "Prolonged Power Cut / Blackout": ["power cut", "load shedding", "blackout", "कटौती", "बिजली गुल"],
+        "Blown Transformer & Voltage Fluctuation": ["transformer", "voltage", "spark", "ट्रांसफार्मर"],
+        "Hanging Live High-Voltage Wires": ["wire", "live wire", "hanging", "करंट", "तार"]
+      }
     }
   },
   "severity_keywords": {
     "CRITICAL": [
-      "death", "dead", "emergency", "life threatening",
-      "immediate danger", "मौत", "आपातकाल", "जान का खतरा", "तुरंत खतरा"
+      "death", "dead", "emergency", "life threatening", "electrocution",
+      "immediate danger", "मौत", "आपातकाल", "जान का खतरा", "तुरंत खतरा", "विस्फोट"
     ],
     "HIGH": [
-      "10 days", "15 days", "20 days", "month", "many people",
-      "hospital", "school", "drinking water", "पानी नहीं",
-      "अस्पताल", "स्कूल", "कई लोग", "एक महीने"
+      "10 days", "15 days", "20 days", "month", "many people", "hospital",
+      "drinking water", "पानी नहीं", "अस्पताल", "स्कूल", "कई लोग", "एक महीने"
     ],
     "MEDIUM": [
-      "problem", "issue", "frequent", "बार बार", "समस्या", "परेशानी"
+      "problem", "issue", "frequent", "बार बार", "समस्या", "परेशानी", "विलंब", "delay"
     ]
   },
   "affected_groups": {
-    "Students": ["student", "students", "school", "स्कूल", "छात्र", "बच्चे"],
-    "Farmers": ["farmer", "farmers", "किसान", "किसानों"],
-    "Village Residents": ["village", "villagers", "गांव", "गाँव", "ग्रामीण"]
+    "School Students": ["student", "students", "school", "college", "स्कूल", "छात्र", "बच्चे", "children"],
+    "Farmers & Agricultural Workers": ["farmer", "farmers", "crop", "किसान", "किसानों", "खेती"],
+    "Hospital Patients & Vulnerable Citizens": ["patient", "patients", "hospital", "elderly", "मरीज", "अस्पताल"],
+    "Daily Commuters & Drivers": ["driver", "commuter", "pedestrian", "passenger", "यात्री"],
+    "Village Community": ["village", "villagers", "गांव", "गाँव", "ग्रामीण"],
+    "General Public": ["residents", "people", "citizens", "जनता", "लोग", "नागरिक"]
   }
 }

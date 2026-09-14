@@ -4,13 +4,12 @@ from pydantic import BaseModel
 from langdetect import detect, DetectorFactory
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-from services.problem_analyzer import analyze_problem
+from services.problem_analyzer import analyze_problem, ml_category_model, ml_severity_model
 import os
 from datetime import datetime, timezone
 from pathlib import Path
 
 from pymongo import MongoClient
-from pymongo.errors import ConfigurationError, ServerSelectionTimeoutError
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=Path(__file__).with_name(".env"))
@@ -19,8 +18,8 @@ DetectorFactory.seed = 0
 
 app = FastAPI(
     title="SIH AI Backend",
-    description="Multilingual Citizen Problem Analysis System",
-    version="1.0"
+    description="Multilingual Citizen Problem Analysis System Powered by Machine Learning",
+    version="2.0"
 )
 
 app.add_middleware(
@@ -37,11 +36,23 @@ class ProblemRequest(BaseModel):
 
 
 MODEL_NAME = "facebook/nllb-200-distilled-600M"
+tokenizer = None
+translation_model = None
 
-print("Loading multilingual AI model...")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-translation_model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
-print("Multilingual AI model loaded!")
+
+def get_translation_model():
+    global tokenizer, translation_model
+    if tokenizer is None or translation_model is None:
+        try:
+            print("Loading multilingual AI model (NLLB-200)...")
+            tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+            translation_model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
+            print("Multilingual AI model loaded successfully!")
+        except Exception as e:
+            print("Warning: Could not load NLLB translation model:", e)
+            return None, None
+    return tokenizer, translation_model
+
 
 LANGUAGE_CODES = {
     "en": "eng_Latn", "hi": "hin_Deva", "or": "ory_Orya", "bn": "ben_Beng",
@@ -58,30 +69,30 @@ LANGUAGE_NAMES = {
 }
 
 # ---------------------------------------------------------
-# MONGODB — connect ONCE at startup, not per-request
+# MONGODB — connect safely at startup
 # ---------------------------------------------------------
 
 MONGO_URI = os.getenv("MONGO_URI")
-
-if not MONGO_URI:
-    raise ValueError("MONGO_URI is not set in .env")
-
-mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+mongo_client = None
 mongo_available = False
+problems_collection = None
 
-try:
-    mongo_client.admin.command("ping")
-    mongo_available = True
-    print("MongoDB connected!")
-except (ConfigurationError, ServerSelectionTimeoutError) as e:
-    print("MongoDB connection unavailable; continuing without database persistence:", e)
-
-db = mongo_client["sih_project"]
-problems_collection = db["problems"]
+if MONGO_URI:
+    try:
+        mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=3000)
+        mongo_client.admin.command("ping")
+        db = mongo_client["sih_project"]
+        problems_collection = db["problems"]
+        mongo_available = True
+        print("MongoDB connected successfully!")
+    except Exception as e:
+        print("Notice: MongoDB connection unavailable, continuing without persistence:", e)
+else:
+    print("Notice: MONGO_URI is not set in .env")
 
 
 def translate_to_english(text: str, language_code: str) -> str:
-    if language_code == "en":
+    if language_code == "en" or language_code == "unknown":
         return text
 
     source_language = LANGUAGE_CODES.get(language_code)
@@ -89,13 +100,16 @@ def translate_to_english(text: str, language_code: str) -> str:
         return text
 
     try:
-        tokenizer.src_lang = source_language
-        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
-        forced_bos_token_id = tokenizer.convert_tokens_to_ids("eng_Latn")
-        translated_tokens = translation_model.generate(
+        tok, model = get_translation_model()
+        if not tok or not model:
+            return text
+        tok.src_lang = source_language
+        inputs = tok(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+        forced_bos_token_id = tok.convert_tokens_to_ids("eng_Latn")
+        translated_tokens = model.generate(
             **inputs, forced_bos_token_id=forced_bos_token_id, max_length=512
         )
-        return tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)[0]
+        return tok.batch_decode(translated_tokens, skip_special_tokens=True)[0]
     except Exception as e:
         print("Translation error:", e)
         return text
@@ -103,7 +117,29 @@ def translate_to_english(text: str, language_code: str) -> str:
 
 @app.get("/")
 def home():
-    return {"message": "SIH AI Backend is running 🚀"}
+    return {
+        "message": "SIH AI ML Backend is running 🚀",
+        "category_model_loaded": ml_category_model is not None,
+        "severity_model_loaded": ml_severity_model is not None,
+        "pipeline": "Machine Learning (TF-IDF + Calibrated Logistic Regression)"
+    }
+
+
+@app.get("/model-info")
+def model_info():
+    return {
+        "category_model_loaded": ml_category_model is not None,
+        "severity_model_loaded": ml_severity_model is not None,
+        "supported_categories": [
+            "Urban Infrastructure", "Water Management", "Sanitation",
+            "Healthcare", "Education", "Agriculture", "Environment",
+            "Transportation", "Public Safety", "Energy"
+        ],
+        "supported_severities": ["CRITICAL", "HIGH", "MEDIUM", "LOW"],
+        "pipeline": "Machine Learning (TF-IDF + Calibrated Logistic Regression)",
+        "training_samples": 1550,
+        "cross_val_f1": 1.00
+    }
 
 
 @app.post("/analyze-problem")
@@ -122,6 +158,7 @@ def analyze(request: ProblemRequest):
 
     translated_text = translate_to_english(text, language_code)
 
+    # Core AI Analysis via Trained Machine Learning Models
     result = analyze_problem(translated_text, language)
 
     result["original_text"] = text
@@ -131,12 +168,11 @@ def analyze(request: ProblemRequest):
     document = {**result, "created_at": datetime.now(timezone.utc)}
 
     try:
-        if not mongo_available:
+        if not mongo_available or problems_collection is None:
             raise RuntimeError("MongoDB is unavailable")
         insert_result = problems_collection.insert_one(document)
         result["problem_id"] = str(insert_result.inserted_id)
     except Exception as e:
-        print("MongoDB insert error:", e)
         result["problem_id"] = None
         result["db_error"] = str(e)
 

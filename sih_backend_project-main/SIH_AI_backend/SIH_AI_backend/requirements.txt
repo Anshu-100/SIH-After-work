@@ -6,3 +6,7 @@ pymongo
 transformers
 torch
 sentencepiece
+scikit-learn
+pandas
+joblib
+scipy

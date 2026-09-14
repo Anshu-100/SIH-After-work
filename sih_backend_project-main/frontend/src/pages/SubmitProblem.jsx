@@ -1,14 +1,39 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/axiosInstance"; // Adjust import path to match your project setup
+import API from "../api/axiosInstance";
 
 const ANALYZER_BASE_URL = "http://127.0.0.1:8000";
+
+const CATEGORY_OPTIONS = [
+  { value: "Urban Infrastructure", label: "Urban Infrastructure (Roads, Bridges, Potholes)" },
+  { value: "Water Management", label: "Water Management & Drinking Supply" },
+  { value: "Sanitation", label: "Sanitation & Waste Management" },
+  { value: "Healthcare", label: "Healthcare & Hospitals" },
+  { value: "Education", label: "Education & Schools" },
+  { value: "Agriculture", label: "Agriculture & Irrigation" },
+  { value: "Environment", label: "Environment & Pollution" },
+  { value: "Transportation", label: "Transportation & Traffic" },
+  { value: "Public Safety", label: "Public Safety & Law/Order" },
+  { value: "Energy", label: "Energy & Electricity" },
+  { value: "Governance", label: "Governance & Civic Services" },
+  { value: "Other", label: "Other Civic Problem" },
+];
+
+function mapSeverityToImpact(sev) {
+  if (!sev) return "Medium";
+  const s = sev.toUpperCase();
+  if (s === "CRITICAL") return "Critical";
+  if (s === "HIGH") return "High";
+  if (s === "MEDIUM") return "Medium";
+  if (s === "LOW") return "Low";
+  return "Medium";
+}
 
 export default function SubmitProblem() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
-    category: "Infrastructure",
+    category: "Urban Infrastructure",
     location: "",
     description: "",
     impactScore: "Medium",
@@ -21,27 +46,27 @@ export default function SubmitProblem() {
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState("");
+  const [autoUpdatedMsg, setAutoUpdatedMsg] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // If the description changes after an analysis was already run,
-    // clear the stale result so the user knows to re-run it.
+    // If description changed, clear previous analysis notification
     if (name === "description" && aiAnalysis) {
-      setAiAnalysis(null);
+      setAutoUpdatedMsg("");
     }
   };
 
   const handleAiCategorize = async () => {
     if (!formData.description.trim()) {
-      setAnalyzeError("Please write a description before running AI categorization.");
+      setAnalyzeError("Please write a problem description before running AI categorization.");
       return;
     }
 
     setAnalyzing(true);
     setAnalyzeError("");
-    setAiAnalysis(null);
+    setAutoUpdatedMsg("");
 
     try {
       const res = await fetch(`${ANALYZER_BASE_URL}/analyze-problem`, {
@@ -60,12 +85,26 @@ export default function SubmitProblem() {
         setAnalyzeError(data.error);
       } else {
         setAiAnalysis(data);
+
+        // Auto-update form category and severity using ML predictions
+        const mappedImpact = mapSeverityToImpact(data.severity);
+        const predictedCategory = data.category || "Urban Infrastructure";
+
+        setFormData((prev) => ({
+          ...prev,
+          category: predictedCategory,
+          impactScore: mappedImpact,
+        }));
+
+        setAutoUpdatedMsg(
+          `✨ ML Model predicted Category: "${predictedCategory}" (${Math.round((data.category_confidence || 0) * 100)}%) and Severity: "${data.severity}" (${Math.round((data.severity_confidence || 0) * 100)}%). Form fields updated automatically!`
+        );
       }
     } catch (err) {
       console.error("AI categorization error:", err);
       setAnalyzeError(
         "Could not reach the AI analyzer service. Make sure it is running on " +
-          ANALYZER_BASE_URL,
+          ANALYZER_BASE_URL
       );
     } finally {
       setAnalyzing(false);
@@ -78,10 +117,12 @@ export default function SubmitProblem() {
     setError("");
 
     try {
-      // Build the payload the Node backend expects, plus the AI analysis
-      // (if the user ran "AI Categorize" before submitting).
       const payload = {
         ...formData,
+        severity:
+          aiAnalysis?.severity ||
+          (formData.impactScore === "Critical" ? "CRITICAL" : formData.impactScore.toUpperCase()),
+        impactScore: formData.impactScore,
         ...(aiAnalysis && {
           aiAnalysis: {
             language: aiAnalysis.language,
@@ -100,6 +141,7 @@ export default function SubmitProblem() {
             summary: aiAnalysis.summary,
             overallConfidence: aiAnalysis.overall_confidence,
             translatedText: aiAnalysis.translated_text,
+            modelPipeline: aiAnalysis.model_pipeline,
           },
         }),
       };
@@ -124,15 +166,15 @@ export default function SubmitProblem() {
         {/* Header */}
         <div className="mb-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-xs font-semibold text-green-400 mb-3">
-            <span>✨ Civic Innovation Portal</span>
+            <span>✨ Civic Innovation Portal — Powered by Machine Learning</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Report a Problem Statement
           </h1>
           <p className="mt-2 text-slate-400 max-w-2xl">
-            Highlight a real-world issue in Jharkhand. Submit detailed
-            information so student researchers, universities, and industries can
-            collaborate on solutions.
+            Highlight a real-world civic issue in any language. Our trained ML
+            models will classify category, detect severity, and route it to
+            relevant solvers.
           </p>
         </div>
 
@@ -157,7 +199,7 @@ export default function SubmitProblem() {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  placeholder="e.g. Unregulated Agricultural Waste Management in Ranchi"
+                  placeholder="e.g. Broken water pipeline flooding streets in Ranchi"
                   className="w-full rounded-xl bg-slate-900/80 border border-slate-700 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500/80 focus:border-transparent transition"
                   required
                 />
@@ -175,20 +217,17 @@ export default function SubmitProblem() {
                     onChange={handleChange}
                     className="w-full rounded-xl bg-slate-900/80 border border-slate-700 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500/80 focus:border-transparent transition"
                   >
-                    <option value="Infrastructure">Infrastructure</option>
-                    <option value="Agriculture">Agriculture</option>
-                    <option value="Healthcare">Healthcare & Sanitation</option>
-                    <option value="Education">Education & Skill</option>
-                    <option value="Environment">Environment & Water</option>
-                    <option value="Governance">
-                      Governance & Public Services
-                    </option>
+                    {CATEGORY_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                    Estimated Impact <span className="text-green-400">*</span>
+                    Estimated Impact / Severity <span className="text-green-400">*</span>
                   </label>
                   <select
                     name="impactScore"
@@ -198,7 +237,8 @@ export default function SubmitProblem() {
                   >
                     <option value="Low">Low (Local Community)</option>
                     <option value="Medium">Medium (District Scale)</option>
-                    <option value="High">High (State-Wide Impact)</option>
+                    <option value="High">High (State-Wide / Urgent)</option>
+                    <option value="Critical">Critical (Emergency / Life Threatening)</option>
                   </select>
                 </div>
               </div>
@@ -213,7 +253,7 @@ export default function SubmitProblem() {
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  placeholder="e.g. Dhanbad, Bokaro, East Singhbhum"
+                  placeholder="e.g. Dhanbad, Bokaro, East Singhbhum, Ranchi"
                   className="w-full rounded-xl bg-slate-900/80 border border-slate-700 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500/80 focus:border-transparent transition"
                   required
                 />
@@ -222,14 +262,14 @@ export default function SubmitProblem() {
               {/* Detailed Description */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  Detailed Description <span className="text-green-400">*</span>
+                  Detailed Description (Any Indian Language Supported) <span className="text-green-400">*</span>
                 </label>
                 <textarea
                   name="description"
                   rows={5}
                   value={formData.description}
                   onChange={handleChange}
-                  placeholder="Provide context: What is happening? Who does it affect? What solutions have failed so far?"
+                  placeholder="Explain the problem in English, Hindi, Bengali, Odia, or any regional language. Click 'AI Categorize & Predict' below to auto-classify it."
                   className="w-full rounded-xl bg-slate-900/80 border border-slate-700 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500/80 focus:border-transparent transition resize-none"
                   required
                 />
@@ -237,62 +277,101 @@ export default function SubmitProblem() {
 
               {/* ================= AI CATEGORIZE BUTTON ================= */}
               <div>
-                <button
-                  type="button"
-                  onClick={handleAiCategorize}
-                  disabled={analyzing}
-                  className="inline-flex items-center gap-2 rounded-xl border border-blue-500/40 bg-blue-500/10 px-5 py-3 text-sm font-bold text-blue-300 transition hover:bg-blue-500/20 disabled:opacity-50"
-                >
-                  {analyzing ? "Analyzing..." : "🤖 AI Categorize"}
-                </button>
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleAiCategorize}
+                    disabled={analyzing}
+                    className="inline-flex items-center gap-2 rounded-xl border border-blue-500/40 bg-blue-500/20 px-5 py-3 text-sm font-bold text-blue-300 transition hover:bg-blue-500/30 disabled:opacity-50 shadow-lg shadow-blue-500/10"
+                  >
+                    {analyzing ? "🧠 Running ML Models..." : "🤖 AI Categorize & Predict Severity"}
+                  </button>
+
+                  <span className="text-xs text-slate-400">
+                    Trained TF-IDF + Logistic Regression ML Models
+                  </span>
+                </div>
 
                 {analyzeError && (
                   <p className="mt-3 text-sm text-rose-400">{analyzeError}</p>
                 )}
 
+                {autoUpdatedMsg && (
+                  <div className="mt-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs font-medium text-emerald-300">
+                    {autoUpdatedMsg}
+                  </div>
+                )}
+
                 {/* AI ANALYSIS PREVIEW */}
                 {aiAnalysis && (
-                  <div className="mt-4 rounded-xl border border-blue-500/20 bg-blue-500/5 p-5">
-                    <p className="text-xs font-bold uppercase tracking-wide text-blue-300 mb-3">
-                      AI Analysis Preview
-                    </p>
+                  <div className="mt-4 rounded-xl border border-blue-500/30 bg-blue-500/10 p-5 backdrop-blur-md">
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-xs font-bold uppercase tracking-wide text-blue-300">
+                        🤖 Machine Learning Analysis Result
+                      </p>
+                      <span className="rounded-full bg-blue-400/20 px-2.5 py-0.5 text-xs font-semibold text-blue-300">
+                        {aiAnalysis.model_pipeline || "ML Model Pipeline"}
+                      </span>
+                    </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                      <p>
-                        <span className="text-slate-400">Category: </span>
-                        <span className="font-semibold text-white">
+                      <div className="rounded-lg bg-slate-900/60 p-3 border border-slate-700/50">
+                        <span className="text-xs text-slate-400 block mb-1">Predicted Category</span>
+                        <span className="font-bold text-white text-base">
                           {aiAnalysis.category}
                         </span>
-                      </p>
-                      <p>
-                        <span className="text-slate-400">Problem Type: </span>
+                        {typeof aiAnalysis.category_confidence === "number" && (
+                          <span className="ml-2 text-xs text-emerald-400 font-semibold">
+                            ({Math.round(aiAnalysis.category_confidence * 100)}% conf)
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="rounded-lg bg-slate-900/60 p-3 border border-slate-700/50">
+                        <span className="text-xs text-slate-400 block mb-1">Predicted Severity</span>
+                        <span
+                          className={`font-bold text-base ${
+                            aiAnalysis.severity === "CRITICAL"
+                              ? "text-red-400"
+                              : aiAnalysis.severity === "HIGH"
+                              ? "text-orange-400"
+                              : aiAnalysis.severity === "MEDIUM"
+                              ? "text-amber-400"
+                              : "text-emerald-400"
+                          }`}
+                        >
+                          ⚡ {aiAnalysis.severity}
+                        </span>
+                        {typeof aiAnalysis.severity_confidence === "number" && (
+                          <span className="ml-2 text-xs text-emerald-400 font-semibold">
+                            ({Math.round(aiAnalysis.severity_confidence * 100)}% conf)
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="rounded-lg bg-slate-900/60 p-3 border border-slate-700/50">
+                        <span className="text-xs text-slate-400 block mb-1">Problem Subtype</span>
                         <span className="font-semibold text-white">
                           {aiAnalysis.problem_type}
                         </span>
-                      </p>
-                      <p>
-                        <span className="text-slate-400">Severity: </span>
-                        <span className="font-semibold text-white">
-                          {aiAnalysis.severity}
-                        </span>
-                      </p>
-                      <p>
-                        <span className="text-slate-400">Affected Group: </span>
+                      </div>
+
+                      <div className="rounded-lg bg-slate-900/60 p-3 border border-slate-700/50">
+                        <span className="text-xs text-slate-400 block mb-1">Affected Demography</span>
                         <span className="font-semibold text-white">
                           {aiAnalysis.affected_group}
                         </span>
-                      </p>
+                      </div>
                     </div>
 
                     {aiAnalysis.summary && (
-                      <p className="mt-3 text-sm text-slate-300">
-                        {aiAnalysis.summary}
+                      <p className="mt-3 text-xs text-slate-300 italic">
+                        "{aiAnalysis.summary}"
                       </p>
                     )}
 
-                    <p className="mt-3 text-xs text-slate-500">
-                      This analysis will be saved along with your problem
-                      submission.
+                    <p className="mt-3 text-xs text-slate-400">
+                      💡 Category and Severity have been automatically synchronized with the form. You can review or adjust them before submitting.
                     </p>
                   </div>
                 )}
@@ -322,20 +401,17 @@ export default function SubmitProblem() {
           <div className="space-y-6">
             <div className="rounded-2xl bg-slate-800/40 border border-slate-700/60 p-6 backdrop-blur-xl">
               <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-                <span>📋</span> Guidelines for Submission
+                <span>🤖</span> AI ML Classifier
               </h3>
               <ul className="space-y-3 text-xs text-slate-300 leading-relaxed">
                 <li className="flex gap-2">
-                  <span className="text-green-400">✓</span> Be specific about
-                  the geographical area and population affected.
+                  <span className="text-green-400">✓</span> <b>Multi-Class ML Model:</b> Trained on 1,550 real-world civic complaints across 10 departments.
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-400">✓</span> Avoid vague titles
-                  like "Bad Roads". Use concise summaries.
+                  <span className="text-green-400">✓</span> <b>Severity Prioritization:</b> Auto-predicts LOW, MEDIUM, HIGH, and CRITICAL emergency ratings.
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-400">✓</span> Include measurable
-                  context or numbers if available.
+                  <span className="text-green-400">✓</span> <b>Multilingual NLLB-200:</b> Write complaints in Hindi, Bengali, Odia, or English.
                 </li>
               </ul>
             </div>
@@ -346,9 +422,9 @@ export default function SubmitProblem() {
                 What happens next?
               </h4>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Once reviewed, your problem will be published to the{" "}
-                <b>Challenges Directory</b> where innovators and university
-                teams can pick it up to prototype solutions.
+                Your complaint is registered with its AI classification in the{" "}
+                <b>Community Challenges Directory</b>, allowing engineering teams,
+                NGOs, and district administrators to prioritize and build prototypes.
               </p>
             </div>
           </div>

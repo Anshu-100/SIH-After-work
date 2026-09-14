@@ -31,11 +31,13 @@ function HomeLanding() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 w-full max-w-full overflow-x-hidden">
       <main id="home">
-        <section className="relative min-h-[900px] overflow-visible bg-[#03183b] md:min-h-[780px]">
-          <div className="absolute left-[-180px] top-[220px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-3xl"></div>
-          <div className="absolute right-[-150px] top-[150px] h-[500px] w-[500px] rounded-full bg-green-500/10 blur-3xl"></div>
+        <section className="relative min-h-[900px] overflow-x-clip bg-[#03183b] md:min-h-[780px]">
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute left-[-180px] top-[220px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-3xl"></div>
+            <div className="absolute right-[-150px] top-[150px] h-[500px] w-[500px] rounded-full bg-green-500/10 blur-3xl"></div>
+          </div>
 
           <div
             className="absolute inset-0 opacity-[0.08]"
@@ -149,7 +151,7 @@ function HomeLanding() {
                 </div>
               </div>
 
-              <div className="absolute left-[-70px] top-[250px] w-52 rounded-2xl border border-purple-200/30 bg-purple-100/95 p-4 shadow-2xl backdrop-blur">
+              <div className="absolute left-0 lg:left-[-30px] top-[250px] w-52 rounded-2xl border border-purple-200/30 bg-purple-100/95 p-4 shadow-2xl backdrop-blur">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-2xl">
                     🎓
@@ -161,7 +163,7 @@ function HomeLanding() {
                 </div>
               </div>
 
-              <div className="absolute right-[-20px] top-[230px] w-48 rounded-2xl border border-orange-200/30 bg-orange-100/95 p-4 shadow-2xl backdrop-blur">
+              <div className="absolute right-0 top-[230px] w-48 rounded-2xl border border-orange-200/30 bg-orange-100/95 p-4 shadow-2xl backdrop-blur">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-2xl">
                     🏭

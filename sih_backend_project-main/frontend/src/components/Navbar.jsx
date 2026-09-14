@@ -11,15 +11,33 @@ function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between bg-slate-900 px-8 py-4 text-white border-b border-slate-800">
-      <Link to="/" className="text-xl font-bold text-emerald-400">
+    <nav className="flex flex-wrap items-center justify-between bg-slate-900 px-4 sm:px-8 py-4 text-white border-b border-slate-800 w-full max-w-full overflow-x-hidden">
+      <Link to="/" className="text-xl font-bold text-emerald-400 shrink-0">
         Jharkhand Innovation Portal
       </Link>
 
-      <div className="flex items-center space-x-6 text-sm font-semibold">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold">
         {/* Always Visible Links */}
         <Link to="/" className="hover:text-emerald-400">
           Home
+        </Link>
+
+        <Link to="/challenges" className="hover:text-emerald-400">
+          Challenges
+        </Link>
+
+        <Link
+          to="/hotspot-map"
+          className="flex items-center gap-1 rounded-lg border border-emerald-500/30 px-3 py-1.5 text-emerald-400 hover:bg-emerald-500/10 transition"
+        >
+          🗺️ Live Map
+        </Link>
+
+        <Link
+          to="/analytics"
+          className="flex items-center gap-1 rounded-lg border border-cyan-500/30 px-3 py-1.5 text-cyan-400 hover:bg-cyan-500/10 transition"
+        >
+          📊 Analytics
         </Link>
 
         {token ? (
