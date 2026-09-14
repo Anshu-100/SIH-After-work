@@ -54,8 +54,15 @@ const taskSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['in-progress', 'pending', 'completed'],
+    enum: ['pending', 'under-review', 'in-progress', 'resolved'],
     default: 'pending'
+  },
+  govResponse: {
+    responseText: { type: String },
+    department:   { type: String },
+    resolvedBy:   { type: String },
+    resolutionId: { type: String },
+    respondedAt:  { type: Date },
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

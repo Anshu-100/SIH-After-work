@@ -207,6 +207,60 @@ function ChallengeDetails() {
             </p>
           </div>
 
+          {/* ── OFFICIAL GOVERNMENT RESPONSE BANNER ─────────────────────── */}
+          {problem.govResponse?.responseText && (
+            <div className="mt-8 rounded-2xl border border-emerald-500/40 bg-emerald-950/40 p-6 shadow-lg">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl">🏛️</span>
+                <div>
+                  <h2 className="text-lg font-black text-emerald-300">
+                    Official Government Response
+                  </h2>
+                  <p className="text-xs text-emerald-400/70">
+                    Government of Jharkhand — Verified Action
+                  </p>
+                </div>
+                <span className="ml-auto rounded-full border border-emerald-500/40 bg-emerald-500/20 px-3 py-1 text-xs font-bold text-emerald-300">
+                  ✅ RESOLVED
+                </span>
+              </div>
+
+              <p className="text-white/80 leading-relaxed whitespace-pre-line">
+                {problem.govResponse.responseText}
+              </p>
+
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {problem.govResponse.department && (
+                  <div className="rounded-xl bg-white/5 px-4 py-3">
+                    <p className="text-xs text-emerald-400/70 font-semibold">Department</p>
+                    <p className="mt-1 text-sm font-bold text-white">{problem.govResponse.department}</p>
+                  </div>
+                )}
+                {problem.govResponse.resolvedBy && (
+                  <div className="rounded-xl bg-white/5 px-4 py-3">
+                    <p className="text-xs text-emerald-400/70 font-semibold">Officer</p>
+                    <p className="mt-1 text-sm font-bold text-white">{problem.govResponse.resolvedBy}</p>
+                  </div>
+                )}
+                {problem.govResponse.resolutionId && (
+                  <div className="rounded-xl bg-white/5 px-4 py-3">
+                    <p className="text-xs text-emerald-400/70 font-semibold">Resolution ID</p>
+                    <p className="mt-1 text-sm font-bold text-emerald-300 font-mono">{problem.govResponse.resolutionId}</p>
+                  </div>
+                )}
+              </div>
+
+              {problem.govResponse.respondedAt && (
+                <p className="mt-4 text-xs text-white/30">
+                  Responded on{" "}
+                  {new Date(problem.govResponse.respondedAt).toLocaleDateString("en-IN", {
+                    day: "numeric", month: "long", year: "numeric",
+                  })}
+                </p>
+              )}
+            </div>
+          )}
+
           {/* ── AI ANALYSIS SECTION ─────────────────────────────────────── */}
           <div className="mt-10 rounded-2xl border border-blue-400/20 bg-blue-500/5 p-6">
             <h2 className="flex items-center gap-2 text-xl font-bold">

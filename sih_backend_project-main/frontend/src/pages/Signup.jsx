@@ -66,8 +66,8 @@ function Signup() {
         localStorage.setItem("token", res.data.token);
       }
 
-      // Redirect directly to Problem Submission page
-      navigate("/submit-task");
+      // Redirect to Home page after successful signup
+      navigate("/");
     } catch (err) {
       setErrorMsg(err.response?.data?.message || "Invalid or expired OTP.");
     } finally {

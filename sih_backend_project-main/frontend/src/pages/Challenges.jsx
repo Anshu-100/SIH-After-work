@@ -102,15 +102,17 @@ export default function Challenges() {
                       )}
                     </div>
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${
-                        task.status === "completed"
-                          ? "bg-blue-100 text-blue-700"
+                      className={`rounded-full px-2.5 py-1 text-xs font-bold capitalize ${
+                        task.status === "resolved"
+                          ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
                           : task.status === "in-progress"
                             ? "bg-amber-100 text-amber-700"
-                            : "bg-slate-100 text-slate-600"
+                            : task.status === "under-review"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-slate-100 text-slate-600"
                       }`}
                     >
-                      {task.status}
+                      {task.status === "resolved" ? "✅ Resolved" : task.status}
                     </span>
                   </div>
 

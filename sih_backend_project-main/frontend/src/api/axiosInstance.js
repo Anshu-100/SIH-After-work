@@ -10,8 +10,15 @@ const API = axios.create({
 // Intercept requests and dynamically add the Authorization token
 API.interceptors.request.use(
   (config) => {
-    // Make sure 'token' matches the key name you used when saving upon login
-    const token = localStorage.getItem("token"); 
+    // If Authorization header is already provided explicitly, keep it
+    if (config.headers?.Authorization) {
+      return config;
+    }
+
+    const isGovRoute = config.url && config.url.includes("/gov");
+    const token = isGovRoute
+      ? localStorage.getItem("govToken")
+      : localStorage.getItem("token");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

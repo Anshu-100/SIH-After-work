@@ -40,6 +40,13 @@ function Navbar() {
           📊 Analytics
         </Link>
 
+        <Link
+          to="/gov-login"
+          className="flex items-center gap-1 rounded-lg border border-blue-500/30 px-3 py-1.5 text-blue-400 hover:bg-blue-500/10 transition text-xs"
+        >
+          🏛️ Gov Portal
+        </Link>
+
         {token ? (
           /* AUTHENTICATED LINKS (Only 1 Logout Button Here) */
           <>

@@ -6,6 +6,7 @@ const solutionRoutes = require("./routes/solutionRoutes");
 
 const authRoutes=require('./routes/authRoutes');
 const taskRoutes=require('./routes/taskRoutes');
+const govRoutes = require('./routes/govRoutes');
 const app=express();
 const collaborationRoutes = require('./routes/collaborationRoutes');
 
@@ -62,6 +63,7 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/auth',authRoutes);
 app.use('/api/tasks',taskRoutes);
 app.use("/api/solutions", solutionRoutes);
+app.use('/api/gov', govRoutes);
 const PORT=process.env.PORT||5000;
 
 app.listen(PORT,()=>console.log(`server is running on port :${PORT}`))

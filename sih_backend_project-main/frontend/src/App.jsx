@@ -16,6 +16,8 @@ import About from "./pages/About";
 import Signup from "./pages/Signup";
 import HotspotMap from "./pages/HotspotMap";
 import ExecutiveDashboard from "./pages/ExecutiveDashboard";
+import GovLogin from "./pages/GovLogin";
+import GovDashboard from "./pages/GovDashboard";
 
 export default function App() {
   return (
@@ -40,6 +42,8 @@ export default function App() {
         <Route path="/hotspot-map" element={<HotspotMap />} />
         <Route path="/analytics" element={<ExecutiveDashboard />} />
         <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
+        <Route path="/gov-login" element={<GovLogin />} />
+        <Route path="/gov-dashboard" element={<GovDashboard />} />
       </Routes>
     </BrowserRouter>
   );

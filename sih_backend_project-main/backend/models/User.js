@@ -13,8 +13,9 @@ const userSchema= new mongoose.Schema({
       required: [true, 'Password is required'],
     },
   isVerified:{type:Boolean,default:false},
+  role: { type: String, enum: ['citizen', 'government'], default: 'citizen' },
   otp:{type:String},
   expires:{type:Date}
 },{timestamps:true})
 
-module.exports =mongoose.model("User",userSchema);
+module.exports = mongoose.models.User || mongoose.model("User", userSchema);

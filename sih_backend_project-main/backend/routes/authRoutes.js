@@ -2,7 +2,7 @@ const express = require('express');
 const jwtLib = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
-const User = require('../models/user');
+const User = require('../models/User');
 
 const router = express.Router();
 
@@ -116,6 +116,28 @@ router.post('/login', async (req, res) => {
 // 4. LOGOUT
 router.post('/logout', (req, res) => {
   res.json({ message: "Logged out successfully." });
+});
+
+// 5. GOVERNMENT LOGIN (role-checked)
+router.post('/gov-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user || user.role !== 'government') {
+      return res.status(403).json({ message: 'Not a government account.' });
+    }
+
+    const matched = await bcrypt.compare(password, user.password);
+    if (!matched) {
+      return res.status(400).json({ message: 'Wrong password.' });
+    }
+
+    const token = jwtLib.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    res.json({ token, role: 'government', message: 'Government login successful.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;
